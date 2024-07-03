@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    
+    <script src=" https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            mapboxgl.accessToken = "pk.eyJ1IjoiYXRoYWxsYWgxOSIsImEiOiJjbGJkY2V6OXcxMXZsM3BwaWdlMWZ5eThmIn0.ZCWnInKFjUgeDKsA6NHYkw";
+            const map = new mapboxgl.Map({
+                container: "map", // container ID
+                center: [-122.420679, 37.772537], // starting position [lng, lat]
+                zoom: 13, // starting zoom
+                style: "mapbox://styles/mapbox/streets-v11", // style URL or style object
+                hash: true, // sync `center`, `zoom`, `pitch`, and `bearing` with URL
+                // Use `transformRequest` to modify requests that begin with `http://myHost`.
+                transformRequest: (url, resourceType) => {
+                    if (resourceType === "Source" && url.startsWith("http://myHost")) {
+                        return {
+                            url: url.replace("http", "https"),
+                            headers: { "my-custom-header": true },
+                            credentials: "include", // Include cookies for cross-origin requests
+                        };
+                    }
+                },
+            });
+            let nav = new mapboxgl.NavigationControl({
+                visualizePitch: true,
+            });
+            map.addControl(nav, "bottom-right");
+
+            let marker = new mapboxgl.Marker()
+                .setLngLat([-122.420679, 37.772537])
+                .addTo(map);
+
+            let popup = new mapboxgl.Popup({
+                offset: {
+                    bottom: [0, -35],
+                },
+            })
+                .setLngLat([-122.420679, 37.772537])
+                .setHTML("<h1>Hello</h1>")
+                .setMaxWidth("300px")
+                .addTo(map);
+            setTimeout(function() {
+                marker.remove();
+                popup.remove();
+            }, 3000);
+        });
+    </script>
+
+    <style>
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+
+    <title>Showing the map</title>
+</head>
+
+<body>
+    <div id="map"></div>
+</body>
+
+</html>
